@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to the Best Restaurant.
+
+  h1 Dynamic content
+
+  if error
+    p Error getting dynamic content.
+  else
+    p The restaurant has the following record counts:
+
+    ul
+      li #[strong TypeTables:] !{data.typetable_count}
+      li #[strong Tables:] !{data.table_count}
+      li #[strong Times available:] !{data.time_available_count}
+      li #[strong Times:] !{data.time_count}

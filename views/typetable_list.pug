@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+    each ty in typetable_list
+      li
+        a(href=ty.url) #{ty.type}
+
+    else
+      li There are no types.

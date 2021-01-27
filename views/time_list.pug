@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+    each val in time_list
+      li
+        a(href=val.url) #{val.table.number} - #{val.tim_formatted} : 
+        if val.status=='Available'
+          span.text-success #{val.status}
+        else if val.status=='Reserved'
+          span.text-danger #{val.status}
+        else
+          span.text-warning #{val.status}
+    else
+      li There are no time in this restaurant.

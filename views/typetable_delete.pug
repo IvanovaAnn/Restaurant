@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 #{type}: #{typetable.type}
+  p= typetable.lifespan
+
+  if typetable_tables.length
+
+    p #[strong Delete the following tables before attempting to delete this typetable.]
+
+    div(style='margin-left:30px;margin-top:30px')
+
+      h4 Tables
+
+      dl
+      each table in typetable_tables
+        dt
+          a(href=table.url) #{table.number}
+        dd #{table.description}
+
+  else
+    p Do you really want to delete this TypeTable?
+
+    form(method='POST' action='')
+      div.form-group
+        input#typetableid.form-control(type='hidden',name='typetableid', required='true', value=typetable._id )
+
+      button.btn.btn-primary(type='submit') Delete

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+
+  h1 TypeTable: #{typetable.type}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Tables
+
+    dl
+      each table in typetable_tables
+        dt
+          a(href=table.url) #{table.number}
+        dd #{table.description}
+
+      else
+        p This typetable has no tables.
+  hr
+  p
+    a(href=typetable.url+'/delete') Delete typetable

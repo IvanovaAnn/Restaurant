@@ -1,0 +1,17 @@
+extends layout
+
+block content
+
+  h1 ID: #{time._id}
+
+  p #[strong The number of the table:  ]
+    a(href=time.table.url) #{time.table.number}
+  p #[strong Time:] #{time.tim_formatted}
+
+  p #[strong Status:]
+    if time.status=='Available'
+      span.text-success #{time.status}
+    else if time.status=='Reserved'
+      span.text-danger #{time.status}
+    else
+      span.text-warning #{time.status}

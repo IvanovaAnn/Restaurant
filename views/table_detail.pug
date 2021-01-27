@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1 #{title} (the number of the table)
+
+  p #[strong Type Table: ]
+    a(href=table.typetable.url) #{table.typetable.type}
+  p #[strong Description: ] #{table.description}
+  
+  h4 Times
+
+    each val in times
+      hr
+      if val.status=='Available'
+        p.text-success #{val.status}
+      else if val.status=='Reserved'
+        p.text-danger #{val.status}
+      else
+        p.text-warning #{val.status}
+      p #[strong Time:] #{val.tim_formatted}
+      p #[strong Id:]
+        a(href=val.url) #{val._id}
+
+    else
+      p There are no available dates for booking this wonderful and elusive table.

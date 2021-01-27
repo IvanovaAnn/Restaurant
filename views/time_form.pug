@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='table') Table:
+      select#table.form-control(type='select' placeholder='Select table' name='table' required='true')
+        - table_list.sort(function(a, b) {let textA = a.number.toUpperCase(); let textB = b.number.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+        for table in table_list
+          if time
+            option(value=table._id selected=(time.table.toString()==table._id.toString() ? 'selected' : false)) #{table.number}
+          else
+            option(value=table._id) #{table.number}
+
+    div.form-group
+      label(for='tim') Date when table available:
+      input#tim.form-control(type='date' name='tim' value=(undefined===time ? '' : time.tim))
+
+    div.form-group
+      label(for='status') Status:
+      select#status.form-control(type='select' placeholder='Select status' name='status' required='true')
+        option(value='Maintenance') Maintenance
+        option(value='Available') Available
+        option(value='Reserved') Reserved
+
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
