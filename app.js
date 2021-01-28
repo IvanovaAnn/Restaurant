@@ -7,7 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog');
-
+var compression = require('compression');
+var helmet = require('helmet');
 var app = express();
 
 // view engine setup
@@ -18,6 +19,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(helmet());
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
@@ -41,13 +44,8 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 var mongoose = require('mongoose');
-//var mongoDB = '600eefb2a3ed5f2dd545ac9b';
-//mongoose.connect(mongoDB);
 
-
-var dev_db_url = 'mongodb+srv://Ann:IvanovaAnnqwer@cluster0.em942.mongodb.net/restor?retryWrites=true&w=majority';
-//var dev_db_url = 'mongodb+srv://Ivanova:Ivanova436@cluster0.n3ugh.mongodb.net/rest?retryWrites=true&w=majority';
-//var dev_db_url = 'mongodb+srv://cooluser:coolpassword@cluster0.a9azn.mongodb.net/local_library?retryWrites=true';
+var dev_db_url = 'mongodb+srv://Ivanova:Ivanova436@cluster0.n3ugh.mongodb.net/rest?retryWrites=true&w=majority';
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 

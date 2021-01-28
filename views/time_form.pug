@@ -7,7 +7,6 @@ block content
     div.form-group
       label(for='table') Table:
       select#table.form-control(type='select' placeholder='Select table' name='table' required='true')
-        - table_list.sort(function(a, b) {let textA = a.number.toUpperCase(); let textB = b.number.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for table in table_list
           if time
             option(value=table._id selected=(time.table.toString()==table._id.toString() ? 'selected' : false)) #{table.number}

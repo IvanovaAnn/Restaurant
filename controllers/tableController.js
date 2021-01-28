@@ -97,18 +97,100 @@ exports.table_create_post = [
     }
 ];
 
-exports.table_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Table delete GET');
+exports.table_delete_get = function(req, res, next) {
+
+    async.parallel({
+        table: function(callback) {
+            Table.findById(req.params.id).exec(callback)
+        },
+        tables_times: function(callback) {
+          Time.find({ 'table': req.params.id }).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.table==null) { 
+            res.redirect('/catalog/tables');
+        }
+        res.render('table_delete', { title: 'Delete Table', table: results.table, table_times: results.tables_times } );
+    });
+
 };
 
-exports.table_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Table delete POST');
+exports.table_delete_post = function(req, res, next) {
+
+    async.parallel({
+        table: function(callback) {
+          Table.findById(req.body.tableid).exec(callback)
+        },
+        tables_times: function(callback) {
+          Time.find({ 'table': req.body.tableid }).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.tables_times.length > 0) {
+            res.render('table_delete', { title: 'Delete Table', table: results.table, table_times: results.tables_times } );
+            return;
+        }
+        else {
+            Table.findByIdAndRemove(req.body.tableid, function deleteTable(err) {
+                if (err) { return next(err); }
+                res.redirect('/catalog/tables')
+            })
+        }
+    });
 };
 
-exports.table_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Table update GET');
+exports.table_update_get = function(req, res, next) {
+    async.parallel({
+        table: function(callback) {
+            Table.findById(req.params.id).populate('typetable').exec(callback);
+        },
+        typetables: function(callback) {
+            TypeTable.find(callback);
+        },
+        }, function(err, results) {
+            if (err) { return next(err); }
+            if (results.table==null) { 
+                var err = new Error('Table not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('table_form', { title: 'Update Table', typetables:results.typetables, table: results.table });
+        });
+
 };
 
-exports.table_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Table update POST');
-};
+exports.table_update_post = [
+    //(req, res, next) => {},
+    body('typetable').trim().isLength({ min: 1 }).escape(),
+    body('number').trim().isLength({ min: 1 }).escape(),
+    body('description').trim().escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        var table = new Table(
+          { typetable: req.body.typetable,
+            number: req.body.number,
+            description: req.body.description,
+            _id:req.params.id
+           });
+
+        if (!errors.isEmpty()) {
+            async.parallel({
+                typetables: function(callback) {
+                    TypeTable.find(callback);
+                },
+            }, function(err, results) {
+                if (err) { return next(err); }
+                res.render('table_form', { title: 'Update Table',typetables:results.typetables, table: table, errors: errors.array() });
+            });
+            return;
+        }
+        else {
+            Table.findByIdAndUpdate(req.params.id, table, {}, function (err,thetable) {
+                if (err) { return next(err); }
+                   res.redirect(thetable.url);
+                });
+        }
+    }
+];

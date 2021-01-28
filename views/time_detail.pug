@@ -15,3 +15,8 @@ block content
       span.text-danger #{time.status}
     else
       span.text-warning #{time.status}
+  hr
+  p
+    a(href=time.url+'/delete') Delete Time
+  p
+    a(href=time.url+'/update') Update Time

@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 #{time.id}: #{time.tim_formatted} (#{time.status})
+  p= time.lifespan
+  p Do you really want to delete this Time?
+
+    form(method='POST' action='')
+      div.form-group
+        input#timeid.form-control(type='hidden',name='timeid', required='true', value=time._id )
+
+      button.btn.btn-primary(type='submit') Delete

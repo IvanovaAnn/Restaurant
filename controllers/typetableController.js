@@ -150,11 +150,45 @@ exports.typetable_delete_post = function(req, res, next) {
 };
 
 // Показать форму обновления типа по запросу GET.
-exports.typetable_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: TypeTable update GET');
+exports.typetable_update_get = function(req, res, next) {
+    async.parallel({
+        typetable: function(callback) {
+            TypeTable.findById(req.params.id).exec(callback);
+        },
+        }, function(err, results) {
+            if (err) { return next(err); }
+            if (results.typetable==null) {
+                var err = new Error('TypeTable not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('typetable_form', { title: 'Update TypeTable', typetable: results.typetable });
+        });
+
 };
 
-// Обновить тип столика по запросу POST.
-exports.typetable_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: TypeTable update POST');
-};
+exports.typetable_update_post = [
+    validator.body('type').trim().isLength({ min: 1 }).escape(),
+    (req, res, next) => {
+        const errors = validator.validationResult(req);
+        var typetable = new TypeTable(
+          { type: req.body.type,
+            _id:req.params.id
+           });
+
+        if (!errors.isEmpty()) {
+            async.parallel(
+              function(err, results) {
+                if (err) { return next(err); }
+                res.render('typetable_form', { title: 'Update TypeTable', typetable: typetable, errors: errors.array() });
+            });
+            return;
+        }
+        else {
+            TypeTable.findByIdAndUpdate(req.params.id, typetable, {}, function (err,thetypetable) {
+                if (err) { return next(err); }
+                   res.redirect(thetypetable.url);
+                });
+        }
+    }
+];

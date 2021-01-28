@@ -5,15 +5,18 @@ block content
 
   form(method='POST' action='')
     div.form-group
-      label(for='number') Title:
+      label(for='number') Number:
       input#number.form-control(type='text', placeholder='The number of the table' name='number' required='true' value=(undefined===table ? '' : table.number) )
     div.form-group
       label(for='typetable') TypeTable:
       select#typetable.form-control(type='select', placeholder='Select typetable' name='typetable' required='true' )
-        - typetables.sort(function(a, b) {let textA = a.type.toUpperCase(); let textB = b.type.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for typetable in typetables
           if table
-            option(value=typetable._id selected=(typetable._id.toString()===table.typetable._id.toString() ? 'selected' : false) ) #{typetable.type}
+            option(
+            value=typetable._id 
+            selected=(
+               typetable._id.toString()==table.typetable._id.toString() ? 'selected' : false
+          )) #{typetable.type}
           else
             option(value=typetable._id) #{typetable.type}
     div.form-group
